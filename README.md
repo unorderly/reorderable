@@ -3,7 +3,7 @@ A pure SwiftUI structural component that allows for easy drag-and-drop reorderin
 
 ![An animated recording of the Vis app, where the user selects the "Reorder Blocks" option and then proceeds to drag blocks from the planned workout around, rearranging their order.](/Documentation/visdemo.gif)
 
-This pacakge contains a `ReorderableVStack` and a `ReorderableHStack`. 
+This package contains a `ReorderableVStack` and a `ReorderableHStack`. 
 
 ## Features
 
@@ -20,7 +20,7 @@ This framework is distributed as a **Swift Package**. To use, add the following 
 https://github.com/visfitness/reorderable
 ```
 
-To add this package to your XCode project, follow [these instructions](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app).
+To add this package to your Xcode project, follow [these instructions](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app).
 
 ## Documentation
 
