@@ -44,7 +44,7 @@ struct DragHandleViewModifier: ViewModifier {
           alreadyHasDragHandle = val
         }
       }
-      .gesture(
+      .simultaneousGesture(
         SimultaneousGesture(
           DragGesture(minimumDistance: 0, coordinateSpace: .named(dragCallbacks.dragCoordinatesSpaceName)),
           DragGesture(minimumDistance: 0, coordinateSpace: .named(scrollCoordinatesSpaceName)))
