@@ -34,7 +34,9 @@ private struct HasDragHandlePreferenceKey: PreferenceKey {
 struct DragHandleViewModifier: ViewModifier {
   @Environment(\.reorderableDragCallback) private var dragCallbacks
   @State var alreadyHasDragHandle: Bool = false
-  
+
+  var isEnabled: Bool
+
   func body(content: Content) -> some View {
     content
       .onPreferenceChange(HasDragHandlePreferenceKey.self) { val in
@@ -55,8 +57,8 @@ struct DragHandleViewModifier: ViewModifier {
             dragCallbacks.onDrag(values.first!, values.second!)
             dragCallbacks.onDrop(values.first!)
           },
-        isEnabled: dragCallbacks.isEnabled && !alreadyHasDragHandle)
-      .preference(key: HasDragHandlePreferenceKey.self, value: true)
+        isEnabled: isEnabled && dragCallbacks.isEnabled && !alreadyHasDragHandle)
+      .preference(key: HasDragHandlePreferenceKey.self, value: isEnabled)
   }
 }
 
@@ -65,7 +67,7 @@ extension View {
   /// Makes this view the handle for dragging the element of the closest ``ReorderableVStack`` or ``ReorderableHStack``.
   ///
   /// Settings this on a subview of the element will make it the only way to move the element around.
-  public func dragHandle() -> some View {
-    modifier(DragHandleViewModifier())
+    public func dragHandle(isEnabled: Bool = true) -> some View {
+    modifier(DragHandleViewModifier(isEnabled: isEnabled))
   }
 }
