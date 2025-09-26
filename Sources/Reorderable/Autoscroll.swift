@@ -2,22 +2,46 @@ import SwiftUI
 
 package let scrollCoordinatesSpaceName = "Scroll"
 
-/// Attributes from the `ScrollView` to pass down to the `reorderable` so that it can autoscroll.
+struct ScrollPositionWrapper: Sendable {
+
+    private nonisolated(unsafe) var _inner: Any
+
+    @available(iOS 18.0, macOS 15.0, *)
+    var wrapped: ScrollPosition {
+        get { self._inner as! ScrollPosition }
+        set { self._inner = newValue }
+    }
+
+    @available(iOS 18.0, macOS 15.0, *)
+    init(_ wrapped: ScrollPosition) {
+        self._inner = wrapped
+    }
+}
+
 @available(iOS 18.0, macOS 15.0, *)
+extension ScrollPosition {
+    var wrapper: ScrollPositionWrapper {
+        get { .init(self) }
+        set { self = newValue.wrapped }
+    }
+}
+
+/// Attributes from the `ScrollView` to pass down to the `reorderable` so that it can autoscroll.
+@available(iOS 17.0, macOS 14.0, *)
 package struct AutoScrollContainerAttributes {
-  let position: Binding<ScrollPosition>
+  let position: Binding<ScrollPositionWrapper>
   let bounds: CGSize
   let contentBounds: CGSize
   let offset: CGPoint
 }
 
 /// Key used to set and retrieve the `ScrollView` attributes from the environment.
-@available(iOS 18.0, macOS 15.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 private struct AutoScrollContainerAttributesEnvironmentKey: EnvironmentKey {
   static let defaultValue: AutoScrollContainerAttributes? = nil
 }
 
-@available(iOS 18.0, macOS 15.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 extension EnvironmentValues {
   package var autoScrollContainerAttributes: AutoScrollContainerAttributes? {
     get { self[AutoScrollContainerAttributesEnvironmentKey.self] }
@@ -54,7 +78,7 @@ private struct AutoScrollOnEdgesViewModifier: ViewModifier {
         .environment(
           \.autoScrollContainerAttributes,
            AutoScrollContainerAttributes(
-            position: $position,
+            position: $position.wrapper,
             bounds: proxy.size,
             contentBounds: scrollContentBounds.bounds,
             offset: scrollContentBounds.offset))
@@ -62,12 +86,17 @@ private struct AutoScrollOnEdgesViewModifier: ViewModifier {
   }
 }
 
-@available(iOS 18.0, macOS 10.15, *)
+@available(iOS 17.0, macOS 14, *)
 extension ScrollView {
   /// Enables the `ScrollView` to automatically scroll when the user drags an element from a ``ReorderableVStack`` or ``ReorderableHStack`` to its edges.
   ///
   /// Because ``Reorderable`` doesn't rely on SwiftUI's native `onDrag`, it also doesn't automatically trigger auto-scrolling when users drag the element to the edge of the parent/ancestor `ScrollView`. Applying this modifier to the `ScrollView` re-enables this behavior.
+  @ViewBuilder
   public func autoScrollOnEdges() -> some View {
-    modifier(AutoScrollOnEdgesViewModifier())
+      if #available(iOS 18, macOS 15, *) {
+          modifier(AutoScrollOnEdgesViewModifier())
+      } else {
+          self
+      }
   }
 }
