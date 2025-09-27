@@ -44,10 +44,10 @@ struct DragHandleViewModifier: ViewModifier {
           alreadyHasDragHandle = val
         }
       }
-      .simultaneousGesture(
+      .gesture(
         SimultaneousGesture(
-          DragGesture(minimumDistance: 0, coordinateSpace: .named(dragCallbacks.dragCoordinatesSpaceName)),
-          DragGesture(minimumDistance: 0, coordinateSpace: .named(scrollCoordinatesSpaceName)))
+          DragGesture(minimumDistance: 10, coordinateSpace: .named(dragCallbacks.dragCoordinatesSpaceName)),
+          DragGesture(minimumDistance: 10, coordinateSpace: .named(scrollCoordinatesSpaceName)))
           .onChanged { values in
             // Putting these here seems to garantee the execution order
             // which eliminates some of the jiggle.
